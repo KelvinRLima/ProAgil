@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProAgil.Repository;
+using AutoMapper;
+using ProAgil.WebAPI.Helpers;
 
 namespace ProAgil.WebAPI
 {
@@ -29,6 +31,9 @@ namespace ProAgil.WebAPI
         {
             services.AddDbContext<ProAgilContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IProAgilRepository, ProAgilRepository>();
+
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors(); //Permitir requisição cruzada
         }

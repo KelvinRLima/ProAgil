@@ -48,10 +48,10 @@ namespace ProAgil.Repository
 
             if (incluirPalestrante)
             {
-                query = query.Include(pe => pe.PalestrantesEventos).ThenInclude(p => p.Palestrante);
+                query = query.Include(pe => pe.PalestrantesEventos).ThenInclude(p => p.Palestrante); //muitos p/ muitos
             }
 
-            query = query.AsNoTracking().OrderByDescending(c => c.DataEvento);
+            query = query.AsNoTracking().OrderBy(c => c.ID);
 
             return await query.ToListAsync();
         }

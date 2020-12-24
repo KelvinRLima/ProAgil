@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ProAgil.Domain;
+using AutoMapper;
+using ProAgil.WebAPI.Dtos;
 
 namespace ProAgil.WebAPI.Controllers
 {
@@ -14,9 +16,12 @@ namespace ProAgil.WebAPI.Controllers
     public class EventoController : ControllerBase
     {
         public readonly IProAgilRepository _repository;
-        public EventoController(IProAgilRepository repository)
+        private readonly IMapper _mapper;
+
+        public EventoController(IProAgilRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         // GET api/evento
@@ -25,23 +30,27 @@ namespace ProAgil.WebAPI.Controllers
         {
             try
             {
-                List<Evento> results = await _repository.GetAllEventosAsync(true);
+                List<Evento> eventos = await _repository.GetAllEventosAsync(true);
+
+                IEnumerable<EventoDto> results = _mapper.Map<EventoDto[]>(eventos);
 
                 return Ok(results);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Banco de Dados Falhou: {ex.Message}");
             }
         }
 
         // GET api/evento/5
-        [HttpGet("{EventoID}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                Evento results = await _repository.GetEventoAsyncByID(id, true);
+                Evento eventos = await _repository.GetEventoAsyncByID(id, true);
+
+                EventoDto results = _mapper.Map<EventoDto>(eventos);
 
                 return Ok(results);
             }
@@ -53,11 +62,13 @@ namespace ProAgil.WebAPI.Controllers
 
         // GET api/evento/string
         [HttpGet("{Tema}")]
-        public async Task<IActionResult> Get(string tema)
+        public async Task<IActionResult> GetByTema(string tema)
         {
             try
             {
-                Evento[] results = await _repository.GetAllEventosAsyncByTema(tema, true);
+                Evento[] eventos = await _repository.GetAllEventosAsyncByTema(tema, true);
+
+                EventoDto[] results = _mapper.Map<EventoDto[]>(eventos);
 
                 return Ok(results);
             }
@@ -90,27 +101,29 @@ namespace ProAgil.WebAPI.Controllers
 
         // POST api/evento
         [HttpPost]
-        public async Task<IActionResult> Post(Evento model)
+        public async Task<IActionResult> Post(EventoDto model)
         {
             try
             {
-                _repository.Add(model);
+                Evento evento = _mapper.Map<Evento>(model);
+
+                _repository.Add(evento);
 
                 if (await _repository.SaveChangesAsync())
                 {
-                    return Created($"/api/evento/{model.ID}", model);
+                    return Created($"/api/evento/{evento.ID}", _mapper.Map<EventoDto>(evento));
                 }
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Banco de Dados Falhou: {ex.Message}");
             }
             return BadRequest("msg");
         }
 
         // Update api/evento
         [HttpPut("{eventoID}")]
-        public async Task<IActionResult> Put(int eventoID, Evento model)
+        public async Task<IActionResult> Put(int eventoID, EventoDto model)
         {
             try
             {
@@ -118,11 +131,13 @@ namespace ProAgil.WebAPI.Controllers
 
                 if (evento == null) return NotFound();
 
-                _repository.Update(model);
+                var teste = _mapper.Map(model, evento);
+
+                _repository.Update(evento);
 
                 if (await _repository.SaveChangesAsync())
                 {
-                    return Created($"/api/evento/{model.ID}", model);
+                    return Created($"/api/evento/{evento.ID}", _mapper.Map<EventoDto>(evento));
                 }
             }
             catch (Exception)
