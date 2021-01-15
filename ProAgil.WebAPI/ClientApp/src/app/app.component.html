@@ -1,8 +1,5 @@
 <app-nav></app-nav>
 <div class="container">
-  <h2>
-    Welcome to {{title}}!
-  </h2>
-  <app-eventos></app-eventos> <!-- Faz referência ao "selector: 'app-eventos'" que está dentro do arquivo 'eventos.component.ts'. Ou seja, traz tudo ques esta no arquivo eventos.component.ts .html e .css-->
+  <!--<app-eventos></app-eventos>--> <!-- Faz referência ao "selector: 'app-eventos'" que está dentro do arquivo 'eventos.component.ts'. Ou seja, traz tudo que esta no arquivo eventos.component.ts .html e .css-->
+  <router-outlet></router-outlet>
 </div>
-<router-outlet></router-outlet>

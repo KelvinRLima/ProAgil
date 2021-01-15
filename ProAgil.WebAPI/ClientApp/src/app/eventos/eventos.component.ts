@@ -7,6 +7,8 @@ import { EventoService } from "../_services/evento.service";
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { ToastrService } from 'ngx-toastr';
+
 defineLocale('pt-br', ptBrLocale);
 
 @Component({
@@ -16,6 +18,8 @@ defineLocale('pt-br', ptBrLocale);
   // , providers: [EventoService] //permite injetar o serviço EventoService nesta classe
 })
 export class EventosComponent implements OnInit {
+
+  titulo = 'Eventos';
 
   eventosFiltrados: Evento[];
   eventos: Evento[];
@@ -27,6 +31,7 @@ export class EventosComponent implements OnInit {
   mostrarImagem = false;
   // modalRef: BsModalRef;
   registerForm: FormGroup;
+  dataEvento: string;
 
   _filtroLista: string;
 
@@ -35,6 +40,7 @@ export class EventosComponent implements OnInit {
     , private modalService: BsModalService
     , private fb: FormBuilder
     , private localeService: BsLocaleService
+    , private toastr: ToastrService
   ) {
     this.localeService.use('pt-br');
   }
@@ -75,7 +81,9 @@ export class EventosComponent implements OnInit {
       () => {
           template.hide();
           this.getEventos();
+          this.toastr.success('Deletado com sucesso!');
         }, error => {
+          this.toastr.error(`Erro ao tentar deletar: ${error}`);
           console.log(error);
         }
     );
@@ -96,8 +104,10 @@ export class EventosComponent implements OnInit {
             console.log(novoEvento);
             template.hide();
             this.getEventos();
+            this.toastr.success('Adicionado com sucesso!');
           },
           error => {
+            this.toastr.error(`Erro ao tentar inserir: ${error}`);
             console.log(error);
           }
         );
@@ -108,8 +118,10 @@ export class EventosComponent implements OnInit {
           () => {
             template.hide();
             this.getEventos();
+            this.toastr.success('Editado com sucesso!');
           },
           error => {
+            this.toastr.error(`Erro ao tentar editar: ${error}`);
             console.log(error);
           }
         );
@@ -119,10 +131,11 @@ export class EventosComponent implements OnInit {
 
   validation() {
     this.registerForm = this.fb.group({
-      tema: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+      tema: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       local: ['', Validators.required],
       dataEvento: ['', [Validators.required]],
-      qtdPessoas: ['', [Validators.required, Validators.max(120000)/*, Validators.pattern('^[0-9]*$')*/]], //validação numérica
+      qtdPessoas: ['', [Validators.required, Validators.max(500),
+        Validators.min(10)/*, Validators.pattern('^[0-9]*$')*/]], //validação numérica
       imagemURL: ['', Validators.required],
       telefone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -134,6 +147,7 @@ export class EventosComponent implements OnInit {
     return this.eventos.filter(
       evento => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
         || evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1
+        || evento.dataEvento.toLocaleString().indexOf(filtrarPor) !== -1
     );
   }
 
@@ -145,10 +159,19 @@ export class EventosComponent implements OnInit {
     this.eventoService.getAllEvento().subscribe(
       (_eventos: Evento[]) => {
         this.eventos = _eventos;
+        this.eventos.forEach(element => {
+          var dataHoraAuxiliar = element.dataEvento.toString();
+          var dataHoraSplit = dataHoraAuxiliar.split(" ");
+          var dataAuxiliar = dataHoraSplit[0];
+          var horaAuxiliar = dataHoraSplit[1];
+          var dataSplit = dataAuxiliar.split("/");
+          element.dataEvento = new Date(`${dataSplit[2]}/${dataSplit[1]}/${dataSplit[0]} ${horaAuxiliar}`);
+        });
         this.eventosFiltrados = this.eventos;
         console.log(_eventos);
       },
       error => {
+        this.toastr.error(`Erro ao tentar carregar: ${error}`);
         console.log(error);
       }
     );

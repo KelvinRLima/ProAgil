@@ -12,11 +12,11 @@ namespace ProAgil.WebAPI.Dtos
         public string Local { get; set; }
         public string DataEvento { get; set; }
 
-        [StringLength(100, MinimumLength = 10, ErrorMessage = "A quantidade de caracteres deve ser entre 10 e 100!")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "A quantidade de caracteres deve ser entre 10 e 100!")]
         [Required(ErrorMessage = "O Tema deve ser preenchido!")]
         public string Tema { get; set; }
 
-        [Range(2, 10)]
+        [Range(10, 500)]
         public int QtdPessoas { get; set; }
         public string ImagemURL { get; set; }
         public string Telefone { get; set; }

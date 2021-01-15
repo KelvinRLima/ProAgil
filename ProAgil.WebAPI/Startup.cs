@@ -32,7 +32,7 @@ namespace ProAgil.WebAPI
             services.AddDbContext<ProAgilContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IProAgilRepository, ProAgilRepository>();
 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(AutoMapperProfiles));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors(); //Permitir requisição cruzada

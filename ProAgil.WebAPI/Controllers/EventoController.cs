@@ -131,7 +131,7 @@ namespace ProAgil.WebAPI.Controllers
 
                 if (evento == null) return NotFound();
 
-                var teste = _mapper.Map(model, evento);
+                _mapper.Map(model, evento);
 
                 _repository.Update(evento);
 
