@@ -6,5 +6,6 @@
   <PropertyGroup>
     <ActiveDebugProfile>ProAgil.WebAPI</ActiveDebugProfile>
     <ShowAllFiles>false</ShowAllFiles>
+    <NameOfLastUsedPublishProfile>FolderProfile</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

@@ -25,16 +25,18 @@ namespace ProAgil.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                List<Evento> results = await _context.Eventos.ToListAsync();
+            //try
+            //{
+            //    List<Evento> results = await _context.Eventos.ToListAsync();
 
-                return Ok(results);
-            }
-            catch (Exception)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
-            }
+            //    return Ok(results);
+            //}
+            //catch (Exception)
+            //{
+            //    return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+            //}
+
+            return Ok("teste");
         }
 
         // GET api/values/5

@@ -24,6 +24,11 @@ import { TituloComponent } from './_shared/titulo/titulo.component';
 
 import { DateTimeFormatPipePipe } from "./_helps/DateTimeFormatPipe.pipe";
 
+import { registerLocaleData } from '@angular/common';
+import localPt from '@angular/common/locales/pt';
+
+registerLocaleData(localPt);
+
 @NgModule({
   declarations: [
     AppComponent,
